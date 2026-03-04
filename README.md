@@ -441,22 +441,4 @@ This project is licensed under the MIT License.
 
 ## 👤 Author
 
-Your Name - [GitHub Profile](https://github.com/yourusername)
-
-## 🙏 Acknowledgments
-
-- TipTap for the excellent rich text editor
-- MongoDB for the powerful database
-- The MERN stack community
-
-## 📞 Support
-
-For issues and questions:
-
-1. Check existing GitHub Issues
-2. Create a new issue with detailed description
-3. Contact: your.email@example.com
-
----
-
-**Made with ❤️ using the MERN Stack**
+Gavesh - [GitHub Profile](https://github.com/Gavesh99324)

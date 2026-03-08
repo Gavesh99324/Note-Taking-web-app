@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -35,6 +35,32 @@ const NoteEditor: React.FC = () => {
     },
   });
 
+  const fetchNote = useCallback(async () => {
+    try {
+      const data = await noteService.getNote(id!);
+      setNote(data);
+      if (editor) {
+        editor.commands.setContent(data.content);
+      }
+    } catch (error) {
+      console.error("Error fetching note:", error);
+      navigate("/dashboard");
+    } finally {
+      setLoading(false);
+    }
+  }, [id, editor, navigate]);
+
+  const handleNoteUpdate = useCallback((data: any) => {
+    if (data.userId !== user?._id) {
+      if (data.updates.content !== undefined && editor) {
+        editor.commands.setContent(data.updates.content);
+      }
+      if (data.updates.title !== undefined && note) {
+        setNote({ ...note, title: data.updates.title });
+      }
+    }
+  }, [user, editor, note]);
+
   useEffect(() => {
     if (id) {
       fetchNote();
@@ -54,39 +80,13 @@ const NoteEditor: React.FC = () => {
         socketService.offUserLeft();
       };
     }
-  }, [id]);
+  }, [id, fetchNote, handleNoteUpdate]);
 
   useEffect(() => {
     if (note && editor && !editor.isFocused) {
       editor.commands.setContent(note.content);
     }
   }, [note, editor]);
-
-  const fetchNote = async () => {
-    try {
-      const data = await noteService.getNote(id!);
-      setNote(data);
-      if (editor) {
-        editor.commands.setContent(data.content);
-      }
-    } catch (error) {
-      console.error("Error fetching note:", error);
-      navigate("/dashboard");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleNoteUpdate = (data: any) => {
-    if (data.userId !== user?._id) {
-      if (data.updates.content !== undefined && editor) {
-        editor.commands.setContent(data.updates.content);
-      }
-      if (data.updates.title !== undefined && note) {
-        setNote({ ...note, title: data.updates.title });
-      }
-    }
-  };
 
   const handleActiveUsers = (data: any) => {
     setActiveUsers(data.activeUsers);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { noteService } from "../services/noteService";
@@ -15,14 +15,6 @@ const Dashboard: React.FC = () => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchNotes();
-  }, []);
-
-  useEffect(() => {
-    filterNotes();
-  }, [notes, filter, searchQuery]);
-
   const fetchNotes = async () => {
     try {
       const data = await noteService.getNotes();
@@ -34,7 +26,7 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  const filterNotes = () => {
+  const filterNotes = useCallback(() => {
     let filtered = notes;
 
     if (filter === "pinned") {
@@ -57,7 +49,15 @@ const Dashboard: React.FC = () => {
     }
 
     setFilteredNotes(filtered);
-  };
+  }, [notes, filter, searchQuery]);
+
+  useEffect(() => {
+    fetchNotes();
+  }, []);
+
+  useEffect(() => {
+    filterNotes();
+  }, [filterNotes]);
 
   const handleCreateNote = async (e: React.FormEvent) => {
     e.preventDefault();

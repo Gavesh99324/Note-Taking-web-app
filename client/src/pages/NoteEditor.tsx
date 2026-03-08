@@ -50,16 +50,19 @@ const NoteEditor: React.FC = () => {
     }
   }, [id, editor, navigate]);
 
-  const handleNoteUpdate = useCallback((data: any) => {
-    if (data.userId !== user?._id) {
-      if (data.updates.content !== undefined && editor) {
-        editor.commands.setContent(data.updates.content);
+  const handleNoteUpdate = useCallback(
+    (data: any) => {
+      if (data.userId !== user?._id) {
+        if (data.updates.content !== undefined && editor) {
+          editor.commands.setContent(data.updates.content);
+        }
+        if (data.updates.title !== undefined && note) {
+          setNote({ ...note, title: data.updates.title });
+        }
       }
-      if (data.updates.title !== undefined && note) {
-        setNote({ ...note, title: data.updates.title });
-      }
-    }
-  }, [user, editor, note]);
+    },
+    [user, editor, note],
+  );
 
   useEffect(() => {
     if (id) {
